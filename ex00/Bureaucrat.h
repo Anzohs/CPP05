@@ -2,15 +2,20 @@
 
 #include <iostream>
 
+typedef char* string;
+
 class Bureaucrat{
     private:
         const std::string name;
-        int   i;
+        int   grade;
         void    GradeTooHighException(void) const;
         void    GradeTooLowException(void)  const;
     public:
-        int getGrade() const;
-        std::string getName() const;
+        Bureaucrat(std::string name, int grade);
+        Bureaucrat(const Bureaucrat& other);
+        Bureaucrat operator=(const Bureaucrat& other);
+        int getGrade(void) const;
+        std::string getName(void) const;
 };
 
 //operator overload
