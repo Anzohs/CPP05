@@ -29,3 +29,9 @@ void Bureaucrat::incrementGrade(void){
         this->GradeTooHighException();
     this->grade++;
 }
+
+void Bureaucrat::decrementGrade(void){
+    if (this->grade == 1)
+        this->GradeTooLowException();
+    this->grade--;
+}
