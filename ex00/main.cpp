@@ -23,10 +23,6 @@ int main(void)
 		std::cerr << "Exception caught: " << e.what() << std::endl;
 	}
 
-	Bureaucrat* bo = new Bureaucrat("Bob", 2);
-
-	std::cout << bo;
-
 	std::cout << "\033[33m" << std::endl << "Test increasing" << "\033[0m" << std::endl;
 	Bureaucrat bob("Bob", 2);
 	std::cout << bob;
