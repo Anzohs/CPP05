@@ -42,7 +42,7 @@ jobs:
           echo "exercises=$json" >> "$GITHUB_OUTPUT"
           echo "Detected exercises: $json"
 
-  build:
+  build-and-valgrind:
     needs: discover
     runs-on: ubuntu-latest
     strategy:
@@ -50,11 +50,46 @@ jobs:
       matrix:
         exercise: ${{ fromJson(needs.discover.outputs.exercises) }}
 
-    name: Build ${{ matrix.exercise }}
+    name: Valgrind ${{ matrix.exercise }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build
-        run: make -C "${{ matrix.exercise }}"
+      - name: Install Valgrind
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y valgrind
+
+      - name: Build and run Valgrind
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          exercise="${{ matrix.exercise }}"
+          makefile="$exercise/Makefile"
+          if [[ ! -f "$makefile" ]]; then
+            makefile="$exercise/makefile"
+          fi
+
+          binary_name=$(awk -F '=' '/^NAME[[:space:]]*=/{gsub(/[[:space:]]/,"",$2); print $2; exit}' "$makefile")
+          if [[ -z "$binary_name" ]]; then
+            echo "Could not extract NAME from $makefile"
+            exit 1
+          fi
+
+          make -C "$exercise"
+
+          binary_path="$exercise/$binary_name"
+          if [[ ! -x "$binary_path" ]]; then
+            echo "Binary not found or not executable: $binary_path"
+            ls -la "$exercise"
+            exit 1
+          fi
+
+          valgrind \
+            --leak-check=full \
+            --show-leak-kinds=all \
+            --errors-for-leak-kinds=all \
+            --error-exitcode=1 \
+            "$binary_path"
