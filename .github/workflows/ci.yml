@@ -1,0 +1,60 @@
+name: C++ CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      exercises: ${{ steps.list.outputs.exercises }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Discover ex* folders
+        id: list
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          dirs=(ex*/)
+          if [[ ${#dirs[@]} -eq 0 ]]; then
+            echo "No ex* directories found at repository root."
+            exit 1
+          fi
+
+          json="[]"
+          for dir in "${dirs[@]}"; do
+            if [[ -f "${dir}Makefile" || -f "${dir}makefile" ]]; then
+              name="${dir%/}"
+              json=$(jq -c --arg d "$name" '. + [$d]' <<< "$json")
+            fi
+          done
+
+          if [[ "$json" == "[]" ]]; then
+            echo "Found ex* directories, but none contain a Makefile."
+            exit 1
+          fi
+
+          echo "exercises=$json" >> "$GITHUB_OUTPUT"
+          echo "Detected exercises: $json"
+
+  build:
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        exercise: ${{ fromJson(needs.discover.outputs.exercises) }}
+
+    name: Build ${{ matrix.exercise }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: make -C "${{ matrix.exercise }}"
