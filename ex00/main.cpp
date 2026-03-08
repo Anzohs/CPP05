@@ -23,6 +23,8 @@ int main(void)
 		std::cerr << "Exception caught: " << e.what() << std::endl;
 	}
 
+	Bureaucrat* bo = new Bureaucrat("Bob", 2);
+
 	std::cout << "\033[33m" << std::endl << "Test increasing" << "\033[0m" << std::endl;
 	Bureaucrat bob("Bob", 2);
 	std::cout << bob;
@@ -35,7 +37,7 @@ int main(void)
 		std::cerr << "Exception caught: " << e.what() << std::endl;
 	}
 	std::cout << bob;
-	
+
 	try
 	{
 	bob.incrementGrade();
@@ -60,7 +62,7 @@ int main(void)
 		std::cerr << "Exception caught: " << e.what() << std::endl;
 	}
 	std::cout << tim;
-	
+
 	try
 	{
 	tim.decrementGrade();
