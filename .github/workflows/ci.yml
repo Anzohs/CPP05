@@ -1,142 +1,141 @@
 name: C++ CI
 
 on:
-  push:
-  pull_request:
+    push:
+    pull_request:
 
 jobs:
-  discover:
-    runs-on: ubuntu-latest
-    outputs:
-      exercises: ${{ steps.list.outputs.exercises }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    discover:
+        runs-on: ubuntu-latest
+        outputs:
+            exercises: ${{ steps.list.outputs.exercises }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Discover ex* folders
-        id: list
-        shell: bash
-        run: |
-          set -euo pipefail
-          shopt -s nullglob
+            - name: Discover ex* folders
+              id: list
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  shopt -s nullglob
 
-          dirs=(ex*/)
-          if [[ ${#dirs[@]} -eq 0 ]]; then
-            echo "No ex* directories found at repository root."
-            exit 1
-          fi
+                  dirs=(ex*/)
+                  if [[ ${#dirs[@]} -eq 0 ]]; then
+                    echo "No ex* directories found at repository root."
+                    exit 1
+                  fi
 
-          json="[]"
-          for dir in "${dirs[@]}"; do
-            if [[ -f "${dir}Makefile" || -f "${dir}makefile" ]]; then
-              name="${dir%/}"
-              json=$(jq -c --arg d "$name" '. + [$d]' <<< "$json")
-            fi
-          done
+                  json="[]"
+                  for dir in "${dirs[@]}"; do
+                    if [[ -f "${dir}Makefile" || -f "${dir}makefile" ]]; then
+                      name="${dir%/}"
+                      json=$(jq -c --arg d "$name" '. + [$d]' <<< "$json")
+                    fi
+                  done
 
-          if [[ "$json" == "[]" ]]; then
-            echo "Found ex* directories, but none contain a Makefile."
-            exit 1
-          fi
+                  if [[ "$json" == "[]" ]]; then
+                    echo "Found ex* directories, but none contain a Makefile."
+                    exit 1
+                  fi
 
-          echo "exercises=$json" >> "$GITHUB_OUTPUT"
-          echo "Detected exercises: $json"
+                  echo "exercises=$json" >> "$GITHUB_OUTPUT"
+                  echo "Detected exercises: $json"
 
-  build-and-valgrind:
-    needs:
-      - discover
-      - check-42-header
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        exercise: ${{ fromJson(needs.discover.outputs.exercises) }}
+    build-and-valgrind:
+        needs:
+            - discover
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                exercise: ${{ fromJson(needs.discover.outputs.exercises) }}
 
-    name: Valgrind ${{ matrix.exercise }}
+        name: Valgrind ${{ matrix.exercise }}
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Install Valgrind
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y valgrind
+            - name: Install Valgrind
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y valgrind
 
-      - name: Build and run Valgrind
-        shell: bash
-        run: |
-          set -euo pipefail
+            - name: Build and run Valgrind
+              shell: bash
+              run: |
+                  set -euo pipefail
 
-          exercise="${{ matrix.exercise }}"
-          makefile="$exercise/Makefile"
-          if [[ ! -f "$makefile" ]]; then
-            makefile="$exercise/makefile"
-          fi
+                  exercise="${{ matrix.exercise }}"
+                  makefile="$exercise/Makefile"
+                  if [[ ! -f "$makefile" ]]; then
+                    makefile="$exercise/makefile"
+                  fi
 
-          binary_name=$(awk -F '=' '/^NAME[[:space:]]*=/{gsub(/[[:space:]]/,"",$2); print $2; exit}' "$makefile")
-          if [[ -z "$binary_name" ]]; then
-            echo "Could not extract NAME from $makefile"
-            exit 1
-          fi
+                  binary_name=$(awk -F '=' '/^NAME[[:space:]]*=/{gsub(/[[:space:]]/,"",$2); print $2; exit}' "$makefile")
+                  if [[ -z "$binary_name" ]]; then
+                    echo "Could not extract NAME from $makefile"
+                    exit 1
+                  fi
 
-          make -C "$exercise"
+                  make -C "$exercise"
 
-          binary_path="$exercise/$binary_name"
-          if [[ ! -x "$binary_path" ]]; then
-            echo "Binary not found or not executable: $binary_path"
-            ls -la "$exercise"
-            exit 1
-          fi
+                  binary_path="$exercise/$binary_name"
+                  if [[ ! -x "$binary_path" ]]; then
+                    echo "Binary not found or not executable: $binary_path"
+                    ls -la "$exercise"
+                    exit 1
+                  fi
 
-          valgrind \
-            --leak-check=full \
-            --show-leak-kinds=all \
-            --errors-for-leak-kinds=all \
-            --error-exitcode=1 \
-            "$binary_path"
+                  valgrind \
+                    --leak-check=full \
+                    --show-leak-kinds=all \
+                    --errors-for-leak-kinds=all \
+                    --error-exitcode=1 \
+                    "$binary_path"
 
-  check-42-header:
-    needs: discover
-    runs-on: ubuntu-latest
-    name: Check 42 School Header
+    check-42-header:
+        needs: discover
+        runs-on: ubuntu-latest
+        name: Check 42 School Header
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Check for 42 header in all C++ files
-        shell: bash
-        run: |
-          set -euo pipefail
+            - name: Check for 42 header in all C++ files
+              shell: bash
+              run: |
+                  set -euo pipefail
 
-          echo "Checking for 42 School header in C++ files..."
-          
-          missing_header=0
-          
-          # Find all .cpp and .h files
-          while IFS= read -r file; do
-            # Skip files in .git directory
-            if [[ "$file" == *".git"* ]]; then
-              continue
-            fi
-            
-            # Check if file starts with the 42 header pattern
-            # The header should start with /* and contain "EPITECH PROJECT"
-            if ! head -20 "$file" | grep -q "EPITECH PROJECT"; then
-              echo "❌ Missing 42 header: $file"
-              missing_header=1
-            else
-              echo "✅ Found 42 header: $file"
-            fi
-          done < <(find . -type f \( -name "*.cpp" -o -name "*.h" \) | sort)
-          
-          if [[ $missing_header -eq 1 ]]; then
-            echo ""
-            echo "❌ Some files are missing the 42 School header!"
-            exit 1
-          else
-            echo ""
-            echo "✅ All files have the 42 School header!"
-            exit 0
-          fi
+                  echo "Checking for 42 School header in C++ files..."
+
+                  missing_header=0
+
+                  # Find all .cpp and .h files
+                  while IFS= read -r file; do
+                    # Skip files in .git directory
+                    if [[ "$file" == *".git"* ]]; then
+                      continue
+                    fi
+
+                    # Check if file starts with the 42 header pattern
+                    # The header should start with /* and contain "EPITECH PROJECT"
+                    if ! head -20 "$file" | grep -q "EPITECH PROJECT"; then
+                      echo "❌ Missing 42 header: $file"
+                      missing_header=1
+                    else
+                      echo "✅ Found 42 header: $file"
+                    fi
+                  done < <(find . -type f \( -name "*.cpp" -o -name "*.h" \) | sort)
+
+                  if [[ $missing_header -eq 1 ]]; then
+                    echo ""
+                    echo "❌ Some files are missing the 42 School header!"
+                    exit 1
+                  else
+                    echo ""
+                    echo "✅ All files have the 42 School header!"
+                    exit 0
+                  fi
