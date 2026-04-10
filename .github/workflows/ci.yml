@@ -88,6 +88,11 @@ jobs:
                     exit 1
                   fi
 
+                  make fclean
+
+                  echo "Files where clean"
+
+
                   valgrind \
                     --leak-check=full \
                     --show-leak-kinds=all \
