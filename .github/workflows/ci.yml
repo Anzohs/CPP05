@@ -88,10 +88,8 @@ jobs:
                     exit 1
                   fi
 
-                  make fclean
-
-                  echo "Files where clean"
-
+                  # Run Valgrind on the built binary
+                  echo "Running Valgrind on $binary_path"
 
                   valgrind \
                     --leak-check=full \
@@ -99,6 +97,9 @@ jobs:
                     --errors-for-leak-kinds=all \
                     --error-exitcode=1 \
                     "$binary_path"
+
+                  make -C "$exercise" fclean
+                  echo "Files were cleaned"
 
     check-42-header:
         needs: discover
