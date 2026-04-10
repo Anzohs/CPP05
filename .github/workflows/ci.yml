@@ -43,7 +43,9 @@ jobs:
           echo "Detected exercises: $json"
 
   build-and-valgrind:
-    needs: discover
+    needs:
+      - discover
+      - check-42-header
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -95,6 +97,7 @@ jobs:
             "$binary_path"
 
   check-42-header:
+    needs: discover
     runs-on: ubuntu-latest
     name: Check 42 School Header
 
