@@ -93,3 +93,47 @@ jobs:
             --errors-for-leak-kinds=all \
             --error-exitcode=1 \
             "$binary_path"
+
+  check-42-header:
+    runs-on: ubuntu-latest
+    name: Check 42 School Header
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for 42 header in all C++ files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking for 42 School header in C++ files..."
+          
+          missing_header=0
+          
+          # Find all .cpp and .h files
+          while IFS= read -r file; do
+            # Skip files in .git directory
+            if [[ "$file" == *".git"* ]]; then
+              continue
+            fi
+            
+            # Check if file starts with the 42 header pattern
+            # The header should start with /* and contain "EPITECH PROJECT"
+            if ! head -20 "$file" | grep -q "EPITECH PROJECT"; then
+              echo "❌ Missing 42 header: $file"
+              missing_header=1
+            else
+              echo "✅ Found 42 header: $file"
+            fi
+          done < <(find . -type f \( -name "*.cpp" -o -name "*.h" \) | sort)
+          
+          if [[ $missing_header -eq 1 ]]; then
+            echo ""
+            echo "❌ Some files are missing the 42 School header!"
+            exit 1
+          else
+            echo ""
+            echo "✅ All files have the 42 School header!"
+            exit 0
+          fi
