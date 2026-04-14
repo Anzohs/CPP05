@@ -45,7 +45,6 @@ jobs:
   build-and-valgrind:
     needs:
       - discover
-      - check-42-header
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
