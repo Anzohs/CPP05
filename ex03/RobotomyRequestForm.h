@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AForm.h"
+#include <string>
 
 class RobotomyRequestForm : public AForm {
     private:
