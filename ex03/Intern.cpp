@@ -6,7 +6,7 @@
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 18:47:51 by hladeiro          #+#    #+#             */
-/*   Updated: 2026/04/14 18:47:52 by hladeiro         ###   ########.fr       */
+/*   Updated: 2026/04/14 18:56:40 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,18 @@
 #include "RobotomyRequestForm.h"
 #include "PresidentialPardonForm.h"
 
-namespace {
-    typedef AForm* (*FormCreator)(const std::string& target);
+typedef AForm* (*FormCreator)(const std::string& target);
 
-    AForm* createShrubbery(const std::string& target) {
-        return (new ShrubberyCreationForm(target));
-    }
+static AForm* createShrubbery(const std::string& target) {
+    return (new ShrubberyCreationForm(target));
+}
 
-    AForm* createRobotomy(const std::string& target) {
-        return (new RobotomyRequestForm(target));
-    }
+static AForm* createRobotomy(const std::string& target) {
+    return (new RobotomyRequestForm(target));
+}
 
-    AForm* createPresidential(const std::string& target) {
-        return (new PresidentialPardonForm(target));
-    }
+static AForm* createPresidential(const std::string& target) {
+    return (new PresidentialPardonForm(target));
 }
 
 Intern::Intern(void) {}
