@@ -1,19 +1,16 @@
 #include "Bureaucrat.h"
 
-Bureaucrat::Bureaucrat(std::string name, int grade) : name(name) {
+Bureaucrat::Bureaucrat(const std::string& name, int grade) : name(name), grade(grade) {
     if (grade < 1)
-        this->GradeTooLowException();
+        throw GradeTooHighException();
     if (grade > 150)
-        this->GradeTooHighException();
-    this->grade = grade;
+        throw GradeTooLowException();
 }
 
-Bureaucrat::Bureaucrat(const Bureaucrat& other) : name(other.name), grade()
+Bureaucrat::Bureaucrat(const Bureaucrat& other) : name(other.name), grade(other.grade)
 {}
 
-Bureaucrat::~Bureaucrat(){
-    std::cout << this->getName() << " was destryoed\n";
-};
+Bureaucrat::~Bureaucrat() {}
 
 Bureaucrat& Bureaucrat::operator=(const Bureaucrat& other) {
     if (this == &other)
@@ -25,20 +22,26 @@ Bureaucrat& Bureaucrat::operator=(const Bureaucrat& other) {
 std::string Bureaucrat::getName(void)const {return (this->name);}
 int Bureaucrat::getGrade(void) const {return (this->grade);}
 std::ostream& operator<<(std::ostream& os,const Bureaucrat& bc) {
-    os << bc.getName() << ", bureaucrat grade " << bc.getGrade() << "\n";
+    os << bc.getName() << ", bureaucrat grade " << bc.getGrade() << ".";
     return (os);
 }
-void    Bureaucrat::GradeTooLowException(void) const {throw std::runtime_error("Grade is Too Low");}
-void    Bureaucrat::GradeTooHighException(void) const {throw std::runtime_error("Grade is Too Hight");}
+
+const char* Bureaucrat::GradeTooHighException::what() const throw() {
+    return ("Grade too high");
+}
+
+const char* Bureaucrat::GradeTooLowException::what() const throw() {
+    return ("Grade too low");
+}
 
 void Bureaucrat::incrementGrade(void){
-    if (this->grade == 150)
-        this->GradeTooHighException();
-    this->grade++;
+    if (this->grade == 1)
+        throw GradeTooHighException();
+    this->grade--;
 }
 
 void Bureaucrat::decrementGrade(void){
-    if (this->grade == 1)
-        this->GradeTooLowException();
-    this->grade--;
+    if (this->grade == 150)
+        throw GradeTooLowException();
+    this->grade++;
 }

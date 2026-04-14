@@ -33,3 +33,6 @@
 
 #zsh files
 .zshrc
+
+# macOS Finder metadata
+.DS_Store
