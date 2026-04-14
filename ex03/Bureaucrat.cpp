@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Bureaucrat.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/14 18:47:27 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:47:27 by hladeiro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Bureaucrat.h"
 #include "AForm.h"
 
@@ -37,18 +49,18 @@ void Bureaucrat::decrementGrade(void) {
 void Bureaucrat::signForm(AForm& form) const {
     try {
         form.beSigned(*this);
-        std::cout << _name << " signs " << form.getName() << std::endl;
+        std::cout << _name << " signed " << form << std::endl;
     } catch (const std::exception& e) {
-        std::cout << _name << " cannot sign " << form.getName() << " because " << e.what() << std::endl;
+        std::cout << _name << " couldn't sign " << form << " because " << e.what() << std::endl;
     }
 }
 
 void Bureaucrat::executeForm(AForm const& form) const {
     try {
         form.execute(*this);
-        std::cout << _name << " executes " << form.getName() << std::endl;
+        std::cout << _name << " executed " << form << std::endl;
     } catch (const std::exception& e) {
-        std::cout << _name << " cannot execute " << form.getName() << " because " << e.what() << std::endl;
+        std::cout << _name << " couldn't execute " << form << " because " << e.what() << std::endl;
     }
 }
 

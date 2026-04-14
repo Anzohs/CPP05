@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/14 18:48:02 by hladeiro          #+#    #+#             */
-/*   Updated: 2026/04/14 18:48:02 by hladeiro         ###   ########.fr       */
+/*   Created: 2026/04/14 18:46:45 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:46:45 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PresidentialPardonForm.h"
-#include "Bureaucrat.h"
 
 PresidentialPardonForm::PresidentialPardonForm(const std::string& target)
     : AForm("PresidentialPardonForm", 25, 5), _target(target) {}
@@ -30,11 +29,6 @@ PresidentialPardonForm& PresidentialPardonForm::operator=(const PresidentialPard
 
 const std::string& PresidentialPardonForm::getTarget(void) const { return (_target); }
 
-void PresidentialPardonForm::execute(Bureaucrat const& executor) const {
-    if (!getIsSigned())
-        throw AForm::FormNotSignedException();
-    if (executor.getGrade() > getExecuteGrade())
-        throw AForm::GradeTooLowException();
-
+void PresidentialPardonForm::executeAction(void) const {
     std::cout << _target << " has been pardoned by Zaphod Beeblebrox." << std::endl;
 }

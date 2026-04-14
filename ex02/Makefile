@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/04/14 18:46:42 by hladeiro          #+#    #+#              #
+#    Updated: 2026/04/14 18:46:43 by hladeiro         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 GREEN = \033[0;32m
 RED = \033[0;31m
 CYAN = \033[0;36m
@@ -9,10 +21,10 @@ BAR_SYMBOL := ▓
 BAR_LENGTH := 50
 PROGRESS := 0
 
-NAME = maggots
+NAME = bureaucrat
 CXX = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98
-SRC = main.cpp Bureaucrat.cpp Form.cpp
+SRC = main.cpp Bureaucrat.cpp AForm.cpp ShrubberyCreationForm.cpp RobotomyRequestForm.cpp PresidentialPardonForm.cpp
 OBJ = $(SRC:.cpp=.o)
 TOTAL_FILES := $(words $(SRC))
 

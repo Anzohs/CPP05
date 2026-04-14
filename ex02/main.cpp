@@ -1,52 +1,67 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/14 18:46:40 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:46:40 by hladeiro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Bureaucrat.h"
-#include "Form.h"
+#include "AForm.h"
+#include "ShrubberyCreationForm.h"
+#include "RobotomyRequestForm.h"
+#include "PresidentialPardonForm.h"
+
+#include <cstdlib>
 
 int main(void)
 {
+	std::srand(1);
+
 	std::cout << "-- Constructor checks --" << std::endl;
 	try {
-		Form badHigh("bad-high", 0, 10);
+		Bureaucrat badHigh("bad-high", 0);
 		(void)badHigh;
 	} catch (const std::exception& e) {
-		std::cout << "Form exception: " << e.what() << std::endl;
-	}
-
-	try {
-		Form badLow("bad-low", 151, 10);
-		(void)badLow;
-	} catch (const std::exception& e) {
-		std::cout << "Form exception: " << e.what() << std::endl;
-	}
-
-	std::cout << std::endl << "-- Signing checks --" << std::endl;
-	Bureaucrat bob("Bob", 50);
-	Form taxForm("TaxForm", 45, 30);
-	Form leaveForm("LeaveForm", 70, 70);
-
-	std::cout << bob << std::endl;
-	std::cout << taxForm << std::endl;
-	std::cout << leaveForm << std::endl;
-
-	bob.signForm(taxForm);
-	bob.signForm(leaveForm);
-
-	std::cout << taxForm << std::endl;
-	std::cout << leaveForm << std::endl;
-
-	std::cout << std::endl << "-- Bureaucrat bounds checks --" << std::endl;
-	Bureaucrat chief("Chief", 1);
-	try {
-		chief.incrementGrade();
-	} catch (const std::exception& e) {
 		std::cout << "Bureaucrat exception: " << e.what() << std::endl;
 	}
 
-	Bureaucrat intern("Intern", 150);
-	try {
-		intern.decrementGrade();
-	} catch (const std::exception& e) {
-		std::cout << "Bureaucrat exception: " << e.what() << std::endl;
-	}
+	std::cout << std::endl << "-- Sign and execute checks --" << std::endl;
+	Bureaucrat high("High", 1);
+	Bureaucrat mid("Mid", 50);
+	Bureaucrat low("Low", 150);
+
+	ShrubberyCreationForm shrub("garden");
+	RobotomyRequestForm robot("Bender");
+	PresidentialPardonForm pardon("Arthur Dent");
+
+	std::cout << high << std::endl;
+	std::cout << shrub << std::endl;
+	std::cout << robot << std::endl;
+	std::cout << pardon << std::endl;
+
+	low.executeForm(pardon);
+	low.signForm(shrub);
+	high.signForm(shrub);
+	mid.signForm(robot);
+	high.signForm(robot);
+	high.signForm(pardon);
+
+	low.executeForm(shrub);
+	high.executeForm(shrub);
+	mid.executeForm(robot);
+	high.executeForm(robot);
+	mid.executeForm(pardon);
+	high.executeForm(pardon);
+
+	std::cout << std::endl << "-- Final states --" << std::endl;
+	std::cout << shrub << std::endl;
+	std::cout << robot << std::endl;
+	std::cout << pardon << std::endl;
 
 	return (0);
 }

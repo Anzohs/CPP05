@@ -5,19 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/14 18:48:18 by hladeiro          #+#    #+#             */
-/*   Updated: 2026/04/14 18:48:19 by hladeiro         ###   ########.fr       */
+/*   Created: 2026/04/14 18:46:54 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:46:55 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "AForm.h"
-#include <string>
 
 class RobotomyRequestForm : public AForm {
     private:
         const std::string _target;
+
+    protected:
+        virtual void executeAction(void) const;
 
     public:
         RobotomyRequestForm(const std::string& target);
@@ -27,6 +29,4 @@ class RobotomyRequestForm : public AForm {
         RobotomyRequestForm& operator=(const RobotomyRequestForm& other);
 
         const std::string& getTarget(void) const;
-
-        virtual void execute(Bureaucrat const& executor) const;
 };

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/14 18:47:22 by hladeiro          #+#    #+#             */
-/*   Updated: 2026/04/14 18:47:23 by hladeiro         ###   ########.fr       */
+/*   Created: 2026/04/14 18:46:14 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:46:16 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,14 @@ void AForm::beSigned(const Bureaucrat& other) {
     if (other.getGrade() > _signGrade)
         throw GradeTooLowException();
     _isSigned = true;
+}
+
+void AForm::execute(Bureaucrat const& executor) const {
+    if (!_isSigned)
+        throw FormNotSignedException();
+    if (executor.getGrade() > _executeGrade)
+        throw GradeTooLowException();
+    executeAction();
 }
 
 const char* AForm::GradeTooHighException::what() const throw() {

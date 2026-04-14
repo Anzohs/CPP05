@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/14 18:48:07 by hladeiro          #+#    #+#             */
-/*   Updated: 2026/04/14 18:48:07 by hladeiro         ###   ########.fr       */
+/*   Created: 2026/04/14 18:46:50 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:46:51 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RobotomyRequestForm.h"
-#include "Bureaucrat.h"
 
 #include <cstdlib>
 
@@ -32,12 +31,7 @@ RobotomyRequestForm& RobotomyRequestForm::operator=(const RobotomyRequestForm& o
 
 const std::string& RobotomyRequestForm::getTarget(void) const { return (_target); }
 
-void RobotomyRequestForm::execute(Bureaucrat const& executor) const {
-    if (!getIsSigned())
-        throw AForm::FormNotSignedException();
-    if (executor.getGrade() > getExecuteGrade())
-        throw AForm::GradeTooLowException();
-
+void RobotomyRequestForm::executeAction(void) const {
     std::cout << "Bzzzzzzzzzzzzzzzzzz..." << std::endl;
     if (std::rand() % 2 == 0)
         std::cout << _target << " has been robotomized successfully." << std::endl;

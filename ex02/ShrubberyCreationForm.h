@@ -1,32 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RobotomyRequestForm.h                              :+:      :+:    :+:   */
+/*   ShrubberyCreationForm.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/14 18:48:18 by hladeiro          #+#    #+#             */
-/*   Updated: 2026/04/14 18:48:19 by hladeiro         ###   ########.fr       */
+/*   Created: 2026/04/14 18:47:05 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:47:19 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "AForm.h"
-#include <string>
 
-class RobotomyRequestForm : public AForm {
+class ShrubberyCreationForm : public AForm {
     private:
         const std::string _target;
 
-    public:
-        RobotomyRequestForm(const std::string& target);
-        RobotomyRequestForm(const RobotomyRequestForm& other);
-        virtual ~RobotomyRequestForm(void);
+    protected:
+        virtual void executeAction(void) const;
 
-        RobotomyRequestForm& operator=(const RobotomyRequestForm& other);
+    public:
+        ShrubberyCreationForm(const std::string& target);
+        ShrubberyCreationForm(const ShrubberyCreationForm& other);
+        virtual ~ShrubberyCreationForm(void);
+
+        ShrubberyCreationForm& operator=(const ShrubberyCreationForm& other);
 
         const std::string& getTarget(void) const;
-
-        virtual void execute(Bureaucrat const& executor) const;
 };

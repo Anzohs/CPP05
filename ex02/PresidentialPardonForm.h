@@ -1,32 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RobotomyRequestForm.h                              :+:      :+:    :+:   */
+/*   PresidentialPardonForm.h                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/14 18:48:18 by hladeiro          #+#    #+#             */
-/*   Updated: 2026/04/14 18:48:19 by hladeiro         ###   ########.fr       */
+/*   Created: 2026/04/14 18:46:48 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:46:48 by hladeiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "AForm.h"
-#include <string>
 
-class RobotomyRequestForm : public AForm {
+class PresidentialPardonForm : public AForm {
     private:
         const std::string _target;
 
-    public:
-        RobotomyRequestForm(const std::string& target);
-        RobotomyRequestForm(const RobotomyRequestForm& other);
-        virtual ~RobotomyRequestForm(void);
+    protected:
+        virtual void executeAction(void) const;
 
-        RobotomyRequestForm& operator=(const RobotomyRequestForm& other);
+    public:
+        PresidentialPardonForm(const std::string& target);
+        PresidentialPardonForm(const PresidentialPardonForm& other);
+        virtual ~PresidentialPardonForm(void);
+
+        PresidentialPardonForm& operator=(const PresidentialPardonForm& other);
 
         const std::string& getTarget(void) const;
-
-        virtual void execute(Bureaucrat const& executor) const;
 };

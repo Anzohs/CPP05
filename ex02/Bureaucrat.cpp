@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Bureaucrat.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hladeiro <hladeiro@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/14 18:46:27 by hladeiro          #+#    #+#             */
+/*   Updated: 2026/04/14 18:46:28 by hladeiro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Bureaucrat.h"
-#include "Form.h"
+#include "AForm.h"
 
 Bureaucrat::Bureaucrat(const std::string& name, int grade) : _name(name), _grade(grade) {
     if (_grade < 1)
@@ -34,12 +46,21 @@ void Bureaucrat::decrementGrade(void) {
     ++_grade;
 }
 
-void Bureaucrat::signForm(Form& form) const {
+void Bureaucrat::signForm(AForm& form) const {
     try {
         form.beSigned(*this);
-        std::cout << _name << " signed " << form.getName() << std::endl;
+        std::cout << _name << " signed " << form << std::endl;
     } catch (const std::exception& e) {
-        std::cout << _name << " couldn't sign " << form.getName() << " because " << e.what() << std::endl;
+        std::cout << _name << " couldn't sign " << form << " because " << e.what() << std::endl;
+    }
+}
+
+void Bureaucrat::executeForm(AForm const& form) const {
+    try {
+        form.execute(*this);
+        std::cout << _name << " executed " << form << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << _name << " couldn't execute " << form << " because " << e.what() << std::endl;
     }
 }
 
@@ -52,6 +73,6 @@ const char* Bureaucrat::GradeTooLowException::what() const throw() {
 }
 
 std::ostream& operator<<(std::ostream& os, const Bureaucrat& bc) {
-    os << bc.getName() << ", bureaucrat grade " << bc.getGrade();
+    os << bc.getName() << ", bureaucrat grade " << bc.getGrade() << ".";
     return (os);
 }
